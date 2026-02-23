@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ task.title }} - Task Manager{% endblock %}
+
+{% block content %}
+<div class="task-detail">
+    <div class="task-header-section">
+        <h1>{{ task.title }}</h1>
+        <div class="task-actions-header">
+            <a href="{% url 'task-update' task.pk %}" class="btn">Edit</a>
+            <a href="{% url 'task-delete' task.pk %}" class="btn btn-danger">Delete</a>
+            <a href="{% url 'task-toggle' task.pk %}" class="btn">
+                {% if task.is_completed %}Mark Incomplete{% else %}Mark Complete{% endif %}
+            </a>
+        </div>
+    </div>
+
+    <div class="task-info">
+        <div class="info-row">
+            <span class="label">Status:</span>
+            <span class="value {% if task.is_completed %}completed{% else %}pending{% endif %}">
+                {% if task.is_completed %}Completed{% else %}Pending{% endif %}
+            </span>
+        </div>
+        <div class="info-row">
+            <span class="label">Priority:</span>
+            <span class="priority priority-{{ task.priority }}">{{ task.priority }}</span>
+        </div>
+        <div class="info-row">
+            <span class="label">Deadline:</span>
+            <span class="value">{{ task.deadline|date:"F d, Y H:i" }}</span>
+        </div>
+        <div class="info-row">
+            <span class="label">Created:</span>
+            <span class="value">{{ task.created_at|date:"F d, Y H:i" }}</span>
+        </div>
+        <div class="info-row">
+            <span class="label">Categories:</span>
+            <div class="categories">
+                {% for category in task.categories.all %}
+                    <span class="category-tag">{{ category.name }}</span>
+                {% empty %}
+                    <span class="no-category">No categories</span>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="task-description-section">
+        <h2>Description</h2>
+        <p>{{ task.description }}</p>
+    </div>
+
+    <div class="comments-section">
+        <h2>Comments ({{ comments.count }})</h2>
+        
+        <form method="post" action="{% url 'add-comment' task.pk %}" class="comment-form">
+            {% csrf_token %}
+            {{ comment_form.as_p }}
+            <button type="submit" class="btn btn-primary">Add Comment</button>
+        </form>
+
+        <div class="comments-list">
+            {% for comment in comments %}
+                <div class="comment">
+                    <div class="comment-header">
+                        <span class="comment-author">{{ comment.user.username }}</span>
+                        <span class="comment-date">{{ comment.created_at|date:"M d, Y H:i" }}</span>
+                    </div>
+                    <p class="comment-content">{{ comment.content }}</p>
+                </div>
+            {% empty %}
+                <p class="no-comments">No comments yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<a href="{% url 'task-list' %}" class="btn btn-secondary">&larr; Back to Tasks</a>
+{% endblock %}

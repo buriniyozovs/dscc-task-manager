@@ -6,6 +6,9 @@ class Category(models.Model):
     description = models.TextField(blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    class Meta:
+        verbose_name_plural = "Categories"
+
     def __str__(self):
         return self.name
 
@@ -19,6 +22,8 @@ class Task(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="tasks")
     categories = models.ManyToManyField(Category, related_name="tasks")
     is_completed = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.title
@@ -30,4 +35,4 @@ class Comment(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="comments")
 
     def __str__(self):
-        return self.content
+        return f"Comment by {self.user.username} on {self.task.title}"

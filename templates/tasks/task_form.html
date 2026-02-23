@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{% if object %}Edit Task{% else %}Create Task{% endif %} - Task Manager{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h1>{% if object %}Edit Task{% else %}Create New Task{% endif %}</h1>
+    
+    <form method="post" class="task-form">
+        {% csrf_token %}
+        
+        {{ form.as_p }}
+        
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+                {% if object %}Update Task{% else %}Create Task{% endif %}
+            </button>
+            <a href="{% url 'task-list' %}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

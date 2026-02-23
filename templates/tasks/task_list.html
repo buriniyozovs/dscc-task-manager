@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Tasks - Task Manager{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>My Tasks</h1>
+    <a href="{% url 'task-create' %}" class="btn btn-primary">Create New Task</a>
+</div>
+
+{% if tasks %}
+    <div class="task-grid">
+        {% for task in tasks %}
+            <div class="task-card {% if task.is_completed %}completed{% endif %}">
+                <div class="task-header">
+                    <h3><a href="{% url 'task-detail' task.pk %}">{{ task.title }}</a></h3>
+                    <span class="priority priority-{{ task.priority }}">{{ task.priority }}</span>
+                </div>
+                <p class="task-description">{{ task.description|truncatewords:30 }}</p>
+                <div class="task-meta">
+                    <span class="deadline">Due: {{ task.deadline|date:"M d, Y H:i" }}</span>
+                    <span class="status {% if task.is_completed %}done{% endif %}">
+                        {% if task.is_completed %}Completed{% else %}Pending{% endif %}
+                    </span>
+                </div>
+                <div class="task-categories">
+                    {% for category in task.categories.all %}
+                        <span class="category-tag">{{ category.name }}</span>
+                    {% endfor %}
+                </div>
+                <div class="task-actions">
+                    <a href="{% url 'task-detail' task.pk %}" class="btn btn-sm">View</a>
+                    <a href="{% url 'task-update' task.pk %}" class="btn btn-sm">Edit</a>
+                    <a href="{% url 'task-toggle' task.pk %}" class="btn btn-sm">
+                        {% if task.is_completed %}Mark Incomplete{% else %}Mark Complete{% endif %}
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-state">
+        <p>No tasks yet. Create your first task!</p>
+        <a href="{% url 'task-create' %}" class="btn btn-primary">Create Task</a>
+    </div>
+{% endif %}
+{% endblock %}

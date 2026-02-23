@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Categories - Task Manager{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Categories</h1>
+    <a href="{% url 'category-create' %}" class="btn btn-primary">Create New Category</a>
+</div>
+
+{% if categories %}
+    <div class="category-grid">
+        {% for category in categories %}
+            <div class="category-card">
+                <h3>{{ category.name }}</h3>
+                <p class="category-description">{{ category.description|default:"No description" }}</p>
+                <p class="task-count">{{ category.tasks.count }} task{{ category.tasks.count|pluralize }}</p>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-state">
+        <p>No categories yet. Create your first category!</p>
+        <a href="{% url 'category-create' %}" class="btn btn-primary">Create Category</a>
+    </div>
+{% endif %}
+{% endblock %}
