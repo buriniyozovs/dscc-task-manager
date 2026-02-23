@@ -31,7 +31,7 @@ services:
       - DB_PASSWORD=${DB_PASSWORD:-postgres}
       - DB_PORT=5432
       - SECRET_KEY=${SECRET_KEY:-change-this-in-production}
-      - ALLOWED_HOSTS=${ALLOWED_HOSTS:-localhost,dscc-buriniyozov.norwayeast.cloudapp.azure.com}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS:-localhost,127.0.0.1,dscc-buriniyozov.norwayeast.cloudapp.azure.com,4.235.97.58}
     depends_on:
       db:
         condition: service_healthy
