@@ -87,6 +87,7 @@ jobs:
           script: |
             cd /app/dscc-task-manager
             docker-compose pull
+            docker-compose down
             docker-compose up -d --build
             docker-compose exec -T web python manage.py migrate --noinput
             docker-compose exec -T web python manage.py collectstatic --noinput
