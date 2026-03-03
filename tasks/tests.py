@@ -29,7 +29,7 @@ class TaskModelTest(TestCase):
         task.categories.add(self.category)
         
         self.assertEqual(task.title, 'Test Task')
-        self.assertFalse(task.is_completed)
+        self.assertEqual(task.status, Task.Status.CREATED)
         self.assertEqual(task.priority, 3)
         self.assertEqual(task.user, self.user)
         self.assertIn(self.category, task.categories.all())
@@ -53,14 +53,14 @@ class TaskModelTest(TestCase):
         )
         self.assertEqual(task.priority, 3)
 
-    def test_task_completed_default(self):
+    def test_task_status_default(self):
         task = Task.objects.create(
             title='Task',
             description='Description',
             deadline=timezone.now() + timedelta(days=1),
             user=self.user
         )
-        self.assertFalse(task.is_completed)
+        self.assertEqual(task.status, Task.Status.CREATED)
 
 
 class CategoryModelTest(TestCase):
@@ -168,14 +168,20 @@ class TaskViewTest(TestCase):
         response = self.client.get('/tasks/create/')
         self.assertEqual(response.status_code, 200)
 
-    def test_task_toggle_complete(self):
+    def test_task_update_status_to_completed(self):
         self.client.login(username='testuser', password='testpass123')
-        self.assertFalse(self.task.is_completed)
-        
-        response = self.client.get(f'/tasks/{self.task.pk}/toggle/')
+        self.assertEqual(self.task.status, Task.Status.CREATED)
+
+        response = self.client.get(f'/tasks/{self.task.pk}/toggle/?status=completed')
         self.task.refresh_from_db()
-        
-        self.assertTrue(self.task.is_completed)
+
+        self.assertEqual(self.task.status, Task.Status.COMPLETED)
+
+    def test_task_update_status_to_in_progress(self):
+        self.client.login(username='testuser', password='testpass123')
+        response = self.client.get(f'/tasks/{self.task.pk}/toggle/?status=in_progress')
+        self.task.refresh_from_db()
+        self.assertEqual(self.task.status, Task.Status.IN_PROGRESS)
 
 
 class CategoryViewTest(TestCase):
