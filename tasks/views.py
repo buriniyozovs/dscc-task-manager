@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -33,6 +34,11 @@ class TaskListView(LoginRequiredMixin, ListView):
         category_id = self.request.GET.get('category')
         if category_id and str(category_id).isdigit():
             qs = qs.filter(categories__id=int(category_id)).distinct()
+        q = self.request.GET.get('q', '').strip()
+        if q:
+            qs = qs.filter(
+                Q(title__icontains=q) | Q(description__icontains=q) | Q(categories__name__icontains=q)
+            ).distinct()
         return qs.order_by('-created_at')
 
     def get_context_data(self, **kwargs):
@@ -45,6 +51,7 @@ class TaskListView(LoginRequiredMixin, ListView):
             status=Task.Status.COMPLETED
         ).filter(deadline__date=today).count()
         context['active_status'] = self.request.GET.get('status', 'all')
+        context['search_query'] = self.request.GET.get('q', '')
         context['today'] = today
         context['tomorrow'] = tomorrow
         context['today_str'] = today.isoformat()
