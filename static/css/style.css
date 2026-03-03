@@ -441,6 +441,55 @@ body {
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
+.task-form input[type="checkbox"] {
+    width: auto;
+    padding: 0;
+}
+
+.task-form label:has(input[type="checkbox"]) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.task-form ul li {
+    list-style: none;
+    margin-bottom: 0.25rem;
+}
+
+.task-form .category-checkboxes .field-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.task-form .category-checkboxes ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.task-form .category-checkboxes li {
+    margin: 0;
+}
+
+.task-form .category-checkboxes li label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-weight: normal;
+    width: auto;
+}
+
+.task-form .category-checkboxes input[type="checkbox"] {
+    width: auto;
+    margin: 0;
+}
+
 .form-actions {
     display: flex;
     gap: 1rem;

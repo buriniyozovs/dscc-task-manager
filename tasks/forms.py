@@ -13,12 +13,18 @@ class RegisterForm(UserCreationForm):
         fields = ['username', 'email', 'first_name', 'last_name', 'password1', 'password2']
 
 class TaskForm(forms.ModelForm):
+    def __init__(self, user=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if user is not None:
+            self.fields['categories'].queryset = Category.objects.filter(user=user)
+
     class Meta:
         model = Task
         fields = ['title', 'description', 'deadline', 'priority', 'categories', 'is_completed']
         widgets = {
             'deadline': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
             'description': forms.Textarea(attrs={'rows': 4}),
+            'categories': forms.CheckboxSelectMultiple(),
         }
 
 class CategoryForm(forms.ModelForm):

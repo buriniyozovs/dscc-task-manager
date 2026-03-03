@@ -4,19 +4,92 @@
 {% block title %}{% if object %}Edit Task{% else %}Create Task{% endif %} - Task Manager{% endblock %}
 
 {% block content %}
-<div class="form-container">
-    <h1>{% if object %}Edit Task{% else %}Create New Task{% endif %}</h1>
-    
-    <form method="post" class="task-form">
+<div class="max-w-2xl mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold text-gray-900 mb-6">
+        {% if object %}Edit Task{% else %}Create New Task{% endif %}
+    </h1>
+
+    <form method="post" class="space-y-6 bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
         {% csrf_token %}
-        
-        {{ form.as_p }}
-        
-        <div class="form-actions">
-            <button type="submit" class="btn btn-primary">
+
+        <div>
+            <label for="id_title" class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+            <input type="text" name="title" id="id_title" value="{{ form.title.value|default:'' }}"
+                   maxlength="200" required
+                   class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+            {% if form.title.errors %}
+                <p class="mt-1 text-sm text-red-600">{{ form.title.errors.0 }}</p>
+            {% endif %}
+        </div>
+
+        <div>
+            <label for="id_description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+            <textarea name="description" id="id_description" rows="4" required
+                      class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500">{{ form.description.value|default:'' }}</textarea>
+            {% if form.description.errors %}
+                <p class="mt-1 text-sm text-red-600">{{ form.description.errors.0 }}</p>
+            {% endif %}
+        </div>
+
+        <div>
+            <label for="id_deadline" class="block text-sm font-medium text-gray-700 mb-1">Deadline</label>
+            <input type="datetime-local" name="deadline" id="id_deadline"
+                   value="{{ form.deadline.value|date:'Y-m-d\TH:i'|default:'' }}" required
+                   class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+            {% if form.deadline.errors %}
+                <p class="mt-1 text-sm text-red-600">{{ form.deadline.errors.0 }}</p>
+            {% endif %}
+        </div>
+
+        <div>
+            <label for="id_priority" class="block text-sm font-medium text-gray-700 mb-1">Priority</label>
+            <select name="priority" id="id_priority"
+                    class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                {% for value, label in form.fields.priority.choices %}
+                    <option value="{{ value }}" {% if form.priority.value == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+            {% if form.priority.errors %}
+                <p class="mt-1 text-sm text-red-600">{{ form.priority.errors.0 }}</p>
+            {% endif %}
+        </div>
+
+        <div>
+            <span class="block text-sm font-medium text-gray-700 mb-2">Categories</span>
+            <div class="space-y-2 rounded-md border border-gray-200 bg-gray-50 p-3">
+                {% for choice in form.categories.field.queryset %}
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" name="categories" value="{{ choice.pk }}"
+                               {% if form.categories.value and choice.pk in form.categories.value %}checked{% endif %}
+                               class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        <span class="text-gray-700">{{ choice.name }}</span>
+                    </label>
+                {% endfor %}
+            </div>
+            {% if form.categories.errors %}
+                <p class="mt-1 text-sm text-red-600">{{ form.categories.errors.0 }}</p>
+            {% endif %}
+        </div>
+
+        <div class="flex items-center gap-2">
+            <input type="checkbox" name="is_completed" id="id_is_completed"
+                   {% if form.is_completed.value %}checked{% endif %}
+                   class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+            <label for="id_is_completed" class="text-sm font-medium text-gray-700 cursor-pointer">Completed</label>
+            {% if form.is_completed.errors %}
+                <p class="text-sm text-red-600">{{ form.is_completed.errors.0 }}</p>
+            {% endif %}
+        </div>
+
+        <div class="flex gap-3 pt-2">
+            <button type="submit"
+                    class="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                 {% if object %}Update Task{% else %}Create Task{% endif %}
             </button>
-            <a href="{% url 'task-list' %}" class="btn btn-secondary">Cancel</a>
+            <a href="{% url 'task-list' %}"
+               class="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                Cancel
+            </a>
         </div>
     </form>
 </div>
