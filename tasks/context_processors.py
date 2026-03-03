@@ -10,10 +10,11 @@ def sidebar_context(request):
     categories = Category.objects.filter(user=request.user).order_by('name')
     tasks = Task.objects.filter(user=request.user)
     total = tasks.count()
-    completed = tasks.filter(is_completed=True).count()
+    completed = tasks.filter(status=Task.Status.COMPLETED).count()
     rate = round((completed / total * 100) if total else 0)
     upcoming = list(
-        tasks.filter(is_completed=False, deadline__gte=timezone.now())
+        tasks.exclude(status=Task.Status.COMPLETED)
+        .filter(deadline__gte=timezone.now())
         .order_by('deadline')[:5]
     )
 

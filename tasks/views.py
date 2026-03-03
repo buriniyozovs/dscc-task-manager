@@ -22,12 +22,14 @@ class TaskListView(LoginRequiredMixin, ListView):
     context_object_name = 'tasks'
 
     def get_queryset(self):
-        qs = Task.objects.filter(user=self.request.user)
+        qs = Task.objects.filter(user=self.request.user).prefetch_related('categories')
         status = self.request.GET.get('status', 'all')
         if status == 'completed':
-            qs = qs.filter(is_completed=True)
-        elif status in ('todo', 'in_progress'):
-            qs = qs.filter(is_completed=False)
+            qs = qs.filter(status=Task.Status.COMPLETED)
+        elif status == 'todo':
+            qs = qs.filter(status=Task.Status.CREATED)
+        elif status == 'in_progress':
+            qs = qs.filter(status=Task.Status.IN_PROGRESS)
         category_id = self.request.GET.get('category')
         if category_id and str(category_id).isdigit():
             qs = qs.filter(categories__id=int(category_id)).distinct()
@@ -39,9 +41,9 @@ class TaskListView(LoginRequiredMixin, ListView):
         now = timezone.now()
         today = now.date()
         tomorrow = today + timedelta(days=1)
-        context['tasks_remaining_today'] = base.filter(
-            is_completed=False, deadline__date=today
-        ).count()
+        context['tasks_remaining_today'] = base.exclude(
+            status=Task.Status.COMPLETED
+        ).filter(deadline__date=today).count()
         context['active_status'] = self.request.GET.get('status', 'all')
         context['today'] = today
         context['tomorrow'] = tomorrow
@@ -97,13 +99,20 @@ class TaskDeleteView(LoginRequiredMixin, DeleteView):
         return Task.objects.filter(user=self.request.user)
 
 @login_required
-def toggle_task_complete(request, pk):
+def update_task_status(request, pk):
     task = get_object_or_404(Task, pk=pk, user=request.user)
-    task.is_completed = not task.is_completed
-    task.save()
-    url = reverse('task-list')
-    if request.GET:
-        url += '?' + request.GET.urlencode()
+    status_value = request.POST.get('status') or request.GET.get('status')
+    if status_value in dict(Task.Status.choices):
+        task.status = status_value
+        task.save()
+    next_url = request.GET.get('next') or request.POST.get('next')
+    if next_url:
+        url = next_url
+    else:
+        url = reverse('task-list')
+        query_string = request.GET.urlencode()
+        if query_string:
+            url += '?' + query_string
     return HttpResponseRedirect(url)
 
 # Category Views

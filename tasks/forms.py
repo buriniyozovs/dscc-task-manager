@@ -20,11 +20,12 @@ class TaskForm(forms.ModelForm):
 
     class Meta:
         model = Task
-        fields = ['title', 'description', 'deadline', 'priority', 'categories', 'is_completed']
+        fields = ['title', 'description', 'deadline', 'priority', 'categories', 'status']
         widgets = {
             'deadline': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
             'description': forms.Textarea(attrs={'rows': 4}),
             'categories': forms.CheckboxSelectMultiple(),
+            'status': forms.Select(),
         }
 
 class CategoryForm(forms.ModelForm):

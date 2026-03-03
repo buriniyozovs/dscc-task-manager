@@ -14,15 +14,24 @@ class Category(models.Model):
         return self.name
 
 class Task(models.Model):
+    class Status(models.TextChoices):
+        CREATED = 'created', 'Created'
+        IN_PROGRESS = 'in_progress', 'In Progress'
+        COMPLETED = 'completed', 'Completed'
+
     PRIORITY_CHOICES = [(i, str(i)) for i in range(1, 6)]
-    
+
     title = models.CharField(max_length=200)
     description = models.TextField()
     deadline = models.DateTimeField()
     priority = models.IntegerField(choices=PRIORITY_CHOICES, default=3)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="tasks")
     categories = models.ManyToManyField(Category, related_name="tasks")
-    is_completed = models.BooleanField(default=False)
+    status = models.CharField(
+        max_length=20,
+        choices=Status.choices,
+        default=Status.CREATED
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

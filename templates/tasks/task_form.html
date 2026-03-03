@@ -71,13 +71,16 @@
             {% endif %}
         </div>
 
-        <div class="flex items-center gap-2">
-            <input type="checkbox" name="is_completed" id="id_is_completed"
-                   {% if form.is_completed.value %}checked{% endif %}
-                   class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-            <label for="id_is_completed" class="text-sm font-medium text-gray-700 cursor-pointer">Completed</label>
-            {% if form.is_completed.errors %}
-                <p class="text-sm text-red-600">{{ form.is_completed.errors.0 }}</p>
+        <div>
+            <label for="id_status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+            <select name="status" id="id_status"
+                    class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                {% for value, label in form.fields.status.choices %}
+                    <option value="{{ value }}" {% if form.status.value == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+            {% if form.status.errors %}
+                <p class="mt-1 text-sm text-red-600">{{ form.status.errors.0 }}</p>
             {% endif %}
         </div>
 
