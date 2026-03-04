@@ -86,7 +86,7 @@ Production uses the image built by CI and pushed to Docker Hub. On the server, d
 - Ensure the app directory (e.g. `/app/dscc-task-manager`) contains `docker-compose.prod.yml` (e.g. by pulling the repo).
 - Add `DOCKERHUB_USERNAME=<your-dockerhub-username>` to the server `.env` (use the same value as the GitHub Actions secret).
 
-The deploy job uses `docker-compose -f docker-compose.yml -f docker-compose.prod.yml` so the server pulls and runs the Hub image instead of rebuilding from local files.
+The deploy job uses `docker-compose -f docker-compose.yml -f docker-compose.prod.yml` so the server pulls and runs the Hub image instead of rebuilding from local files. The CI/CD workflow runs only on the `main` branch (push and pull requests targeting main); build and deploy run only on push to `main`, so pushes to other branches (e.g. staging) do not trigger deployment.
 
 ## Project Structure
 
