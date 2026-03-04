@@ -1,0 +1,6 @@
+services:
+  web:
+    image: ${DOCKERHUB_USERNAME}/task-manager:latest
+    volumes:
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media

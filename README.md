@@ -79,6 +79,15 @@ docker-compose up --build
 pytest
 ```
 
+### Production Deployment
+
+Production uses the image built by CI and pushed to Docker Hub. On the server, deployment runs with the production Compose override:
+
+- Ensure the app directory (e.g. `/app/dscc-task-manager`) contains `docker-compose.prod.yml` (e.g. by pulling the repo).
+- Add `DOCKERHUB_USERNAME=<your-dockerhub-username>` to the server `.env` (use the same value as the GitHub Actions secret).
+
+The deploy job uses `docker-compose -f docker-compose.yml -f docker-compose.prod.yml` so the server pulls and runs the Hub image instead of rebuilding from local files.
+
 ## Project Structure
 
 ```
@@ -103,6 +112,7 @@ task-manager/
 ├── nginx/               # Nginx configuration
 ├── Dockerfile
 ├── docker-compose.yml
+├── docker-compose.prod.yml
 ├── gunicorn.conf.py
 └── requirements.txt
 ```
