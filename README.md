@@ -27,14 +27,14 @@ A Django-based task management application with user authentication, categories,
 
 - Python 3.11+
 - Docker and Docker Compose
-- PostgreSQL (for local development)
+- PostgreSQL
 
 ### Local Development Setup
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
-cd task-manager
+git clone https://github.com/buriniyozovs/dscc-task-manager.git
+cd dscc-task-manager
 ```
 
 2. Create a virtual environment:
@@ -50,7 +50,7 @@ pip install -r requirements.txt
 
 4. Create a `.env` file:
 ```bash
-cp .env.example .env
+cp .env
 # Edit .env with your settings
 ```
 
@@ -71,7 +71,7 @@ python manage.py runserver
 docker-compose up --build
 ```
 
-2. The application will be available at `http://localhost`
+2. The application will be available at `http://localhost:8000`
 
 ### Running Tests
 
@@ -153,5 +153,6 @@ task-manager/
 | `DB_HOST` | PostgreSQL host | `localhost` (or `db` in Docker) |
 | `DB_PORT` | PostgreSQL port | `5432` |
 | `DOCKERHUB_USERNAME` | Docker Hub username (for production image) | (set on server) |
+
 
 
