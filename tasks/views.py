@@ -125,7 +125,7 @@ def update_task_status(request, pk):
 # Category Views
 class CategoryListView(LoginRequiredMixin, ListView):
     model = Category
-    template_name = 'tasks/category_list.html'
+    template_name = 'categories/category_list.html'
     context_object_name = 'categories'
     
     def get_queryset(self):
@@ -134,7 +134,7 @@ class CategoryListView(LoginRequiredMixin, ListView):
 class CategoryCreateView(LoginRequiredMixin, CreateView):
     model = Category
     form_class = CategoryForm
-    template_name = 'tasks/category_form.html'
+    template_name = 'categories/category_form.html'
     success_url = reverse_lazy('category-list')
     
     def form_valid(self, form):
@@ -158,4 +158,4 @@ def add_comment(request, pk):
 def home(request):
     if request.user.is_authenticated:
         return redirect('task-list')
-    return render(request, 'base.html')
+    return render(request, 'landing.html')
