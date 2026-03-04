@@ -92,29 +92,52 @@ The deploy job uses `docker-compose -f docker-compose.yml -f docker-compose.prod
 
 ```
 task-manager/
-├── config/              # Django project settings
-│   ├── settings.py
-│   ├── urls.py
-│   └── wsgi.py
-├── tasks/               # Main application
-│   ├── admin.py
-│   ├── models.py
-│   ├── views.py
-│   ├── forms.py
-│   ├── urls.py
-│   └── tests.py
-├── templates/           # HTML templates
-│   ├── base.html
-│   ├── registration/
-│   └── tasks/
-├── static/              # Static files
-│   └── css/
-├── nginx/               # Nginx configuration
+├── .github/
+│ └── workflows/
+│ └── deploy.yml # CI/CD pipeline
+├── config/ # Django project settings
+│ ├── settings.py
+│ ├── urls.py
+│ ├── wsgi.py
+│ └── asgi.py
+├── tasks/ # Main application
+│ ├── migrations/
+│ ├── admin.py
+│ ├── apps.py
+│ ├── context_processors.py
+│ ├── forms.py
+│ ├── models.py
+│ ├── tests.py
+│ ├── urls.py
+│ └── views.py
+├── templates/
+│ ├── base.html
+│ ├── landing.html
+│ ├── registration/
+│ │ ├── login.html
+│ │ └── register.html
+│ ├── tasks/
+│ │ ├── task_list.html
+│ │ ├── task_detail.html
+│ │ ├── task_form.html
+│ │ └── task_confirm_delete.html
+│ └── categories/
+│ ├── category_list.html
+│ └── category_form.html
+├── static/
+│ └── css/
+│ └── style.css
+├── nginx/
+│ └── nginx.conf
+├── manage.py
 ├── Dockerfile
 ├── docker-compose.yml
 ├── docker-compose.prod.yml
+├── deploy.sh
 ├── gunicorn.conf.py
-└── requirements.txt
+├── pytest.ini
+├── requirements.txt
+└── README.md
 ```
 
 ## Environment Variables
@@ -130,4 +153,5 @@ task-manager/
 | `DB_HOST` | PostgreSQL host | `localhost` (or `db` in Docker) |
 | `DB_PORT` | PostgreSQL port | `5432` |
 | `DOCKERHUB_USERNAME` | Docker Hub username (for production image) | (set on server) |
+
 
