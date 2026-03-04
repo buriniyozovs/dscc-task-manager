@@ -1,6 +1,8 @@
 services:
   web:
     image: ${DOCKERHUB_USERNAME}/task-manager:latest
+    environment:
+      - SECURE_SSL_REDIRECT=True
     volumes:
       - static_volume:/app/staticfiles
       - media_volume:/app/media
