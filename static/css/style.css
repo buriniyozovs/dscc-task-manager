@@ -655,6 +655,10 @@ body {
     margin-top: auto;
 }
 
+.progress-bar-fill {
+    width: calc(var(--progress, 0) * 1%);
+}
+
 @media (max-width: 768px) {
     .nav-container {
         flex-direction: column;

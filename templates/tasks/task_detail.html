@@ -10,9 +10,9 @@
         <div class="flex flex-wrap gap-2">
             <a href="{% url 'task-update' task.pk %}" class="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Edit</a>
             <a href="{% url 'task-delete' task.pk %}" class="rounded-md border border-red-300 bg-white px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-50">Delete</a>
-            <a href="{% url 'task-toggle' task.pk %}" class="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
-                {% if task.is_completed %}Mark Incomplete{% else %}Mark Complete{% endif %}
-            </a>
+            {% if task.status != 'created' %}<a href="{% url 'task-toggle' task.pk %}?status=created&next={{ request.get_full_path|urlencode }}" class="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Set to Created</a>{% endif %}
+            {% if task.status != 'in_progress' %}<a href="{% url 'task-toggle' task.pk %}?status=in_progress&next={{ request.get_full_path|urlencode }}" class="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Set In Progress</a>{% endif %}
+            {% if task.status != 'completed' %}<a href="{% url 'task-toggle' task.pk %}?status=completed&next={{ request.get_full_path|urlencode }}" class="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Mark Complete</a>{% endif %}
         </div>
     </div>
 
@@ -20,8 +20,8 @@
         <dl class="grid gap-3 sm:grid-cols-2">
             <div>
                 <dt class="text-sm font-medium text-gray-500">Status</dt>
-                <dd class="mt-0.5 {% if task.is_completed %}text-green-600{% else %}text-amber-600{% endif %}">
-                    {% if task.is_completed %}Completed{% else %}Pending{% endif %}
+                <dd class="mt-0.5 {% if task.status == 'completed' %}text-green-600{% elif task.status == 'in_progress' %}text-amber-600{% else %}text-gray-600{% endif %}">
+                    {{ task.get_status_display }}
                 </dd>
             </div>
             <div>
