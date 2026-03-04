@@ -117,6 +117,17 @@ task-manager/
 └── requirements.txt
 ```
 
-## License
+## Environment Variables
 
-MIT License
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `SECRET_KEY` | Django secret key | (required in production) |
+| `DEBUG` | Enable debug mode (`True`/`False`) | `True` |
+| `ALLOWED_HOSTS` | Comma-separated hosts | `localhost,127.0.0.1` |
+| `DB_NAME` | PostgreSQL database name | `taskmanager` |
+| `DB_USER` | PostgreSQL user | `postgres` |
+| `DB_PASSWORD` | PostgreSQL password | `postgres` |
+| `DB_HOST` | PostgreSQL host | `localhost` (or `db` in Docker) |
+| `DB_PORT` | PostgreSQL port | `5432` |
+| `DOCKERHUB_USERNAME` | Docker Hub username (for production image) | (set on server) |
+
