@@ -121,10 +121,17 @@
     {% else %}
     <nav class="bg-white border-b border-gray-200 shadow-sm">
         <div class="max-w-6xl mx-auto px-4 h-14 flex justify-between items-center">
-            <a href="/" class="text-xl font-semibold text-gray-900">Task Manager</a>
-            <div class="flex gap-4">
-                <a href="{% url 'login' %}" class="text-gray-700 hover:text-blue-600">Login</a>
-                <a href="{% url 'register' %}" class="text-gray-700 hover:text-blue-600">Register</a>
+            <a href="{% url 'home' %}" class="flex items-center gap-2 text-gray-900 font-semibold text-xl">
+                <span class="w-8 h-8 rounded bg-blue-600 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                    </svg>
+                </span>
+                TaskMaster
+            </a>
+            <div class="flex gap-3">
+                <a href="{% url 'login' %}" class="px-4 py-2 rounded-lg text-sm font-medium text-blue-600 bg-white border border-gray-200 hover:bg-gray-50">Log In</a>
+                <a href="{% url 'register' %}" class="px-4 py-2 rounded-lg text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">Get Started</a>
             </div>
         </div>
     </nav>
@@ -132,7 +139,7 @@
         {% block content_unauth %}{% endblock %}
     </main>
     <footer class="bg-white border-t border-gray-200 py-4 mt-auto">
-        <p class="text-center text-sm text-gray-500">&copy; 2026 Task Manager. Built with Django.</p>
+        <p class="text-center text-sm text-gray-500">© {% now "Y" %} TaskMaster Inc. All rights reserved.</p>
     </footer>
     {% endif %}
 
