@@ -3,7 +3,7 @@ services:
     image: postgres:15-alpine
     ports:
       - "5432:5432"
-    env_file: .env.production
+    env_file: .env
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
@@ -17,11 +17,15 @@ services:
       retries: 5
 
   web:
-    image: ${DOCKERHUB_USERNAME}/task-manager:latest
-    env_file: .env.production
+    build: .
+    command: gunicorn --config gunicorn.conf.py config.wsgi:application
+    env_file: .env
+    volumes:
+      - .:/app
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
     environment:
-      - DEBUG=False
-      - SECURE_SSL_REDIRECT=True
+      - DEBUG=True
       - DB_HOST=db
       - DB_NAME=${DB_NAME}
       - DB_USER=${DB_USER}
@@ -29,9 +33,6 @@ services:
       - DB_PORT=5432
       - SECRET_KEY=${SECRET_KEY}
       - ALLOWED_HOSTS=${ALLOWED_HOSTS}
-    volumes:
-      - static_volume:/app/staticfiles
-      - media_volume:/app/media
     depends_on:
       db:
         condition: service_healthy

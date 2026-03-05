@@ -4,21 +4,21 @@ set -e
 echo "Starting deployment..."
 
 echo "Pulling latest images..."
-docker-compose pull
+docker-compose -f docker-compose.yml --env-file .env.production pull
 
 echo "Stopping old containers..."
-docker-compose down
+docker-compose -f docker-compose.yml --env-file .env.production down
 
 echo "Building and starting new containers..."
-docker-compose up -d --build
+docker-compose -f docker-compose.yml --env-file .env.production up -d
 
 echo "Waiting for database to be ready..."
 sleep 5
 
 echo "Running migrations..."
-docker-compose exec -T web python manage.py migrate --noinput
+docker-compose -f docker-compose.yml --env-file .env.production exec -T web python manage.py migrate --noinput
 
 echo "Collecting static files..."
-docker-compose exec -T web python manage.py collectstatic --noinput
+docker-compose -f docker-compose.yml --env-file .env.production exec -T web python manage.py collectstatic --noinput
 
 echo "Deployment complete!"

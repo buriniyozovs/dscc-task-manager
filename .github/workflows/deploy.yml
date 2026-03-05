@@ -2,11 +2,9 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
 
 permissions:
   contents: read
@@ -132,8 +130,8 @@ jobs:
           script: |
             cd /app/dscc-task-manager
             git fetch origin main && git reset --hard origin/main
-            docker-compose -f docker-compose.yml -f docker-compose.prod.yml pull
-            docker-compose -f docker-compose.yml -f docker-compose.prod.yml down
-            docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
-            docker-compose -f docker-compose.yml -f docker-compose.prod.yml exec -T web python manage.py migrate --noinput
-            docker-compose -f docker-compose.yml -f docker-compose.prod.yml exec -T web python manage.py collectstatic --noinput
+            docker-compose -f docker-compose.yml --env-file .env.production pull
+            docker-compose -f docker-compose.yml --env-file .env.production down
+            docker-compose -f docker-compose.yml --env-file .env.production up -d
+            docker-compose -f docker-compose.yml --env-file .env.production exec -T web python manage.py migrate --noinput
+            docker-compose -f docker-compose.yml --env-file .env.production exec -T web python manage.py collectstatic --noinput
