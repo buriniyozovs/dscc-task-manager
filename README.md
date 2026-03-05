@@ -50,7 +50,7 @@ pip install -r requirements.txt
 
 4. Create a `.env` file:
 ```bash
-cp .env
+cp .env.example .env
 # Edit .env with your settings
 ```
 
