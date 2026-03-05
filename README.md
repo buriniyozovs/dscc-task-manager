@@ -66,13 +66,18 @@ python manage.py runserver
 
 ### Docker Setup (development)
 
-1. Create a `.env` file (see above or copy from `.env.example`).
-2. Build and run with Docker Compose:
+1. Create a `.env` file (see above or copy from `.env.example`). Set `SSL_DOMAIN=localhost` for local HTTPS.
+2. Generate dev HTTPS certificates (one-time, required for nginx in Docker):
+```bash
+bash scripts/generate-dev-certs.sh
+```
+On Windows with Git Bash or WSL, run the same script. This creates self-signed certs in `dev-certs/live/localhost/` (the folder is gitignored).
+3. Build and run with Docker Compose:
 ```bash
 docker compose -f docker-compose.dev.yml up --build
 ```
 
-2. The application will be available at `http://localhost:8000`
+4. The application will be available at `https://localhost` 
 
 ### Running Tests
 
@@ -84,7 +89,7 @@ pytest
 
 Production uses the image built by CI and pushed to Docker Hub. On the server:
 
-- Create a `.env.production` file with production credentials: `DOCKERHUB_USERNAME`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `SECRET_KEY`, `ALLOWED_HOSTS` (use the same `DOCKERHUB_USERNAME` as the GitHub Actions secret).
+- Create a `.env.production` file with production credentials: `DOCKERHUB_USERNAME`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `SECRET_KEY`, `ALLOWED_HOSTS`, and `SSL_DOMAIN` (your production domain, e.g. `dscc-buriniyozov.norwayeast.cloudapp.azure.com`). Use the same `DOCKERHUB_USERNAME` as the GitHub Actions secret. HTTPS uses Let's Encrypt certs under `/etc/letsencrypt` on the server; ensure certs exist for `SSL_DOMAIN` (e.g. via `certbot certonly --standalone -d <domain>`).
 - The deploy script runs `git fetch origin main && git reset --hard origin/main` in the app directory so the server has the latest files (untracked files like `.env.production` are not modified).
 - Deploy with: `docker compose -f docker-compose.yml --env-file .env.production up -d`. The CI/CD workflow runs only on the `main` branch; build and deploy run only on push to `main`.
 
@@ -142,16 +147,26 @@ task-manager/
 │ └── images/
 │   └── tasks-preview.png
 ├── nginx/
-│ └── nginx.conf
+│ ├── nginx.conf
+│ ├── nginx.conf.template
+│ ├── entrypoint.sh
+│ └── Dockerfile
 ├── manage.py
 ├── Dockerfile
 ├── docker-compose.yml       # production
 ├── docker-compose.dev.yml   # development
 ├── gunicorn.conf.py
+├── scripts/
+│ └── generate-dev-certs.sh
 ├── pytest.ini
 ├── requirements.txt
 └── README.md
 ```
+
+## SSL / HTTPS
+
+- **Dev:** Set `SSL_DOMAIN=localhost` in `.env`. Certificates live under `dev-certs/live/<SSL_DOMAIN>/`; generate them once with `bash scripts/generate-dev-certs.sh`. The app is served over `https://localhost` (self-signed; accept the browser warning).
+- **Prod:** Set `SSL_DOMAIN` in `.env.production` to your public domain. Nginx expects Let's Encrypt certs at `/etc/letsencrypt/live/<SSL_DOMAIN>/` on the server (mount point `/etc/nginx/ssl` in the container). Obtain certs with Certbot (e.g. `certbot certonly --standalone -d <domain>`) and ensure renewal is configured.
 
 ## Environment Variables
 
@@ -166,6 +181,7 @@ task-manager/
 | `DB_HOST` | PostgreSQL host | `localhost` (or `db` in Docker) |
 | `DB_PORT` | PostgreSQL port | `5432` |
 | `DOCKERHUB_USERNAME` | Docker Hub username (for production image) | (set on server) |
+| `SSL_DOMAIN` | Domain used for SSL cert paths (dev: `localhost`, prod: your public domain) | `localhost` |
 
 <img width="1920" height="977" alt="image" src="https://github.com/user-attachments/assets/7889f707-9a9f-4ff5-91d8-11e44fe924f7" />
 
