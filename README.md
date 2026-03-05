@@ -64,11 +64,12 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-### Docker Setup
+### Docker Setup (development)
 
-1. Build and run with Docker Compose:
+1. Create a `.env` file (see above or copy from `.env.example`).
+2. Build and run with Docker Compose:
 ```bash
-docker-compose up --build
+docker compose -f docker-compose.dev.yml up --build
 ```
 
 2. The application will be available at `http://localhost:8000`
@@ -81,12 +82,11 @@ pytest
 
 ### Production Deployment
 
-Production uses the image built by CI and pushed to Docker Hub. On the server, deployment runs with the production Compose override:
+Production uses the image built by CI and pushed to Docker Hub. On the server:
 
-- The deploy script runs `git fetch origin main && git reset --hard origin/main` in the app directory so the server always has the latest `docker-compose.prod.yml` and other repo files (untracked files like `.env` are not modified).
-- Add `DOCKERHUB_USERNAME=<your-dockerhub-username>` to the server `.env` (use the same value as the GitHub Actions secret).
-
-The deploy job uses `docker-compose -f docker-compose.yml -f docker-compose.prod.yml` so the server pulls and runs the Hub image instead of rebuilding from local files. The CI/CD workflow runs only on the `main` branch (push and pull requests targeting main); build and deploy run only on push to `main`, so pushes to other branches (e.g. staging) do not trigger deployment.
+- Create a `.env.production` file with production credentials: `DOCKERHUB_USERNAME`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `SECRET_KEY`, `ALLOWED_HOSTS` (use the same `DOCKERHUB_USERNAME` as the GitHub Actions secret).
+- The deploy script runs `git fetch origin main && git reset --hard origin/main` in the app directory so the server has the latest files (untracked files like `.env.production` are not modified).
+- Deploy with: `docker compose -f docker-compose.yml --env-file .env.production up -d`. The CI/CD workflow runs only on the `main` branch; build and deploy run only on push to `main`.
 
 ## Project Structure
 
@@ -131,9 +131,8 @@ task-manager/
 │ └── nginx.conf
 ├── manage.py
 ├── Dockerfile
-├── docker-compose.yml
-├── docker-compose.prod.yml
-├── deploy.sh
+├── docker-compose.yml       # production
+├── docker-compose.dev.yml   # development
 ├── gunicorn.conf.py
 ├── pytest.ini
 ├── requirements.txt
