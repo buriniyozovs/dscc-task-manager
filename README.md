@@ -124,9 +124,23 @@ task-manager/
 │ └── categories/
 │ ├── category_list.html
 │ └── category_form.html
+├── app_screenshots/
+│ ├── categories_list.png
+│ ├── delete_task.png
+│ ├── landing_page_1.png
+│ ├── landing_page_2.png
+│ ├── login.png
+│ ├── register.png
+│ ├── search_task.png
+│ ├── sort_by_category.png
+│ ├── sort_by_status.png
+│ ├── task_create.png
+│ ├── task_details.png
+│ ├── task_edit.png
+│ └── task_list.png
 ├── static/
-│ └── css/
-│ └── style.css
+│ └── images/
+│   └── tasks-preview.png
 ├── nginx/
 │ └── nginx.conf
 ├── manage.py
