@@ -154,5 +154,7 @@ task-manager/
 | `DB_PORT` | PostgreSQL port | `5432` |
 | `DOCKERHUB_USERNAME` | Docker Hub username (for production image) | (set on server) |
 
+<img width="1920" height="977" alt="image" src="https://github.com/user-attachments/assets/7889f707-9a9f-4ff5-91d8-11e44fe924f7" />
+
 
 
